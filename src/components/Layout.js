@@ -1,54 +1,48 @@
-import React from 'react'
-import Helmet from 'react-helmet'
-import Footer from '../components/Footer'
-import Navbar from '../components/Navbar'
-import './all.sass'
-import useSiteMetadata from './SiteMetadata'
+/**
+ * Layout component that queries for data
+ * with Gatsby's useStaticQuery component
+ *
+ * See: https://www.gatsbyjs.org/docs/use-static-query/
+ */
 
-const TemplateWrapper = ({ children }) => {
-  const { title, description } = useSiteMetadata()
+import React from "react"
+import PropTypes from "prop-types"
+import { useStaticQuery, graphql } from "gatsby"
+import Header from "./header"
+import "./layout.css"
+
+const Layout = ({ children }) => {
+  const data = useStaticQuery(graphql`
+    query SiteTitleQuery {
+      site {
+        siteMetadata {
+          title
+        }
+      }
+    }
+  `)
+
   return (
-    <div>
-      <Helmet>
-        <html lang="en" />
-        <title>{title}</title>
-        <meta name="description" content={description} />
-
-        <link
-          rel="apple-touch-icon"
-          sizes="180x180"
-          href="/img/apple-touch-icon.png"
-        />
-        <link
-          rel="icon"
-          type="image/png"
-          href="/img/favicon-32x32.png"
-          sizes="32x32"
-        />
-        <link
-          rel="icon"
-          type="image/png"
-          href="/img/favicon-16x16.png"
-          sizes="16x16"
-        />
-
-        <link
-          rel="mask-icon"
-          href="/img/safari-pinned-tab.svg"
-          color="#ff4400"
-        />
-        <meta name="theme-color" content="#fff" />
-
-        <meta property="og:type" content="business.business" />
-        <meta property="og:title" content={title} />
-        <meta property="og:url" content="/" />
-        <meta property="og:image" content="/img/og-image.jpg" />
-      </Helmet>
-      <Navbar />
-      <div>{children}</div>
-      <Footer />
-    </div>
+    <>
+      <div className={`container flex flex-col min-h-screen`}>
+        <Header siteTitle={data.site.siteMetadata.title}/>
+        <main className={`flex-grow`}>
+            {children}
+        </main>
+        <footer className={`my-8 w-full text-roman-silver`}>
+          <div className={`flex flex-col text-xs`}>
+            <div>
+              <a href="https://github.com/blakedietz/blakedietz.me">Made with ❤️ by @blakedietz. </a>
+            </div>
+          </div>
+        </footer>
+      </div>
+    </>
   )
 }
 
-export default TemplateWrapper
+Layout.propTypes = {
+  children: PropTypes.node.isRequired,
+}
+
+export default Layout
